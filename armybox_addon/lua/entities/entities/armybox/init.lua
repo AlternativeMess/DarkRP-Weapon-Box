@@ -58,8 +58,10 @@ net.Receive("GetWeapon", function(player)
         return
     end
 
-    if (ply:GetPos():Distance(ent:GetPos()) < 100) then
+    if (player:GetPos():Distance(ent:GetPos()) < 200) then
         player:Give(Weapon)
         timer.Create(sid .. "WeaponTimerTakeIt", 180, 1, function() end)
+    else
+        DarkRP.notify(player, 0, 4, "Вы не можете себе этого позволить!")
     end
 end)
