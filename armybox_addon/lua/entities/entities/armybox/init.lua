@@ -11,6 +11,11 @@ function ENT:Initialize()
     self:SetSolid(SOLID_VPHYSICS)
     self.CanUse = true
     self:SetUseType(SIMPLE_USE)
+    local phys = ENT:GetPhysicsObject()
+
+    if phys:IsValid() then
+        phys:Wake()
+    end
 end
 
 function ENT:Use(activator)
@@ -21,27 +26,10 @@ function ENT:Use(activator)
     end
 end
 
-local function SpawnSArmOne()
-    for key, value in pairs(SpawnSArm) do
-        local ent = ents.Create("armybox")
-        ent:SetPos(SpawnSArm[key])
-        ent:Spawn()
-        ent:Activate()
-        local phys = ent:GetPhysicsObject()
-
-        if phys:IsValid() then
-            phys:Wake()
-        end
-    end
-end
-
-hook.Add("InitPostEntity", "SpawnSArmOne", SpawnSArmOne)
-
 net.Receive("GetWeapon", function(player)
     local sid = player:SteamID64()
     local Weapon = net.ReadString()
-    ent = net.ReadEntity()
-    local value = false
+    local ent = net.ReadEntity()
 
     for k, v in pairs(WeaponsArm) do
         if Weapon == v.Weapon then
