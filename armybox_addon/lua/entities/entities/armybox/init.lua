@@ -14,8 +14,11 @@ function ENT:Initialize()
 end
 
 function ENT:Use(activator)
-    net.Start("GetMenu")
-    net.Send(activator)
+    if activator:IsPlayer() then
+        net.Start("GetMenu")
+        net.WriteEntity(self)
+        net.Send(activator)
+    end
 end
 
 local function SpawnSArmOne()
@@ -34,9 +37,10 @@ end
 
 hook.Add("InitPostEntity", "SpawnSArmOne", SpawnSArmOne)
 
-net.Receive("GetWeapon", function(Weapon, player)
+net.Receive("GetWeapon", function(player)
     local sid = player:SteamID64()
-    Weapon = net.ReadString()
+    local Weapon = net.ReadString()
+    ent = net.ReadEntity()
     local value = false
 
     for k, v in pairs(WeaponsArm) do
@@ -47,21 +51,14 @@ net.Receive("GetWeapon", function(Weapon, player)
     end
 
     if not value then return end
-    local found = false
-
-    for k, v in pairs(SpawnSArm) do
-        if player:GetPos():DistToSqr(SpawnSArm[k]) < 250000 then
-            found = true
-        end
-    end
-
-    if not found then return end
 
     if timer.Exists(sid .. "WeaponTimerTakeIt") then
         player:ChatPrint("Перед взятием оружия нужно подождать " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " секунд!")
+
+        return
     end
 
-    if not timer.Exists(sid .. "WeaponTimerTakeIt") then
+    if (ply:GetPos():Distance(ent:GetPos()) < 100) then
         player:Give(Weapon)
         timer.Create(sid .. "WeaponTimerTakeIt", 180, 1, function() end)
     end

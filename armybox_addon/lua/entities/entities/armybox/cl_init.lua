@@ -22,7 +22,8 @@ function ENT:Draw()
     self:DrawModel()
 end
 
-function Menu()
+net.Receive("GetMenu", function()
+    local armyBox = net.ReadEntity()
     local MainMenu = vgui.Create("DFrame")
     MainMenu:SetPos(ScrW() * .01, ScrH() * .25)
     MainMenu:SetSize(ScrW() / 2, ScrH() / 2)
@@ -43,14 +44,12 @@ function Menu()
             WeaponList:SetText(value.Name)
             WeaponList:Dock(TOP)
             WeaponList:DockMargin(0, 0, 0, 5)
-            WeaponList.DoClick = function() return SecondMenuVoid(value.model, value.Weapon, value.Name) end
+            WeaponList.DoClick = function() return SecondMenuVoid(value.model, value.Weapon, value.Name, armyBox) end
         end
     end
-end
+end)
 
-net.Receive("GetMenu", Menu)
-
-function SecondMenuVoid(model, Weapon, Name)
+function SecondMenuVoid(model, Weapon, Name, armyBox)
     local SecondMenu = vgui.Create("DFrame")
     SecondMenu:SetPos(ScrW() * .52, ScrH() * .25)
     SecondMenu:SetSize(ScrW() / 4, ScrH() / 4 - 7)
@@ -80,6 +79,7 @@ function SecondMenuVoid(model, Weapon, Name)
     BuyWeapon.DoClick = function()
         net.Start("GetWeapon")
         net.WriteString(Weapon)
+        net.WriteEntity(armyBox)
         net.SendToServer()
     end
 end
