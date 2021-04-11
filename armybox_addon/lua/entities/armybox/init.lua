@@ -26,13 +26,27 @@ function ENT:Use(activator)
     end
 end
 
-net.Receive("GetWeapon", function(len, player)
-    local sid = player:SteamID64()
-    local Weapon = net.ReadString()
+net.Receive("GetWeapon", function(len, ply)
+    local sid = ply:SteamID64()
+    local entity = net.ReadString()
     local doent = net.ReadEntity()
+    local teamserver = false
+    local value = false
 
-    for k, v in pairs(WeaponsArm) do
-        if Weapon == v.Weapon then
+    if not Customization.ArmyBox.GunDealerNeed then
+        for k, v in pairs(player.GetAll()) do
+            if v:Team() == Customization.ArmyBox.GunDealerTeam then
+                teamserver = true
+                DarkRP.notify(ply, 1, 4, Translation.ArmyBox.GunDealer)
+                break
+            end
+        end
+        if teamserver then return end
+    end
+
+    for k, v in pairs(CustomShipments) do
+        if entity == v.entity and v.pricesep then
+            price = v.pricesep
             value = true
             break
         end
@@ -41,16 +55,18 @@ net.Receive("GetWeapon", function(len, player)
     if not value then return end
 
     if timer.Exists(sid .. "WeaponTimerTakeIt") then
-        --player:ChatPrint("Перед взятием оружия нужно подождать " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " секунд!")
-        DarkRP.notify(player, 0, 4, "Перед взятием оружия нужно подождать " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " секунд!")
+        DarkRP.notify(ply, 1, 4, Translation.ArmyBox.TimeLeft .. " " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " " .. Translation.ArmyBox.Seconds)
 
         return
     end
 
-    if (player:GetPos():Distance(doent:GetPos()) < 200) then
-        player:Give(Weapon)
-        timer.Create(sid .. "WeaponTimerTakeIt", 180, 1, function() end)
-    else
-        DarkRP.notify(player, 0, 4, "Вы слишком далеко!")
+    if (ply:GetPos():Distance(doent:GetPos()) < 200) then
+        if ply:canAfford(price) then
+            ply:addMoney(-price)
+            ply:Give(entity)
+            timer.Create(sid .. "WeaponTimerTakeIt", 180, 1, function() end)
+        else
+            DarkRP.notify(ply, 1, 4, Translation.ArmyBox.NoMoney)
+        end
     end
 end)

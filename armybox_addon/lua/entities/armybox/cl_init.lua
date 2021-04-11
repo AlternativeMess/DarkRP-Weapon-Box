@@ -1,23 +1,5 @@
 include("shared.lua")
 
-surface.CreateFont("Weapon Font", {
-    font = "Comic Sans MS",
-    extended = true,
-    size = 20,
-    weight = 500,
-    blursize = 0,
-    scanlines = 0,
-    antialias = true,
-    underline = false,
-    italic = true,
-    strikeout = false,
-    symbol = false,
-    rotary = false,
-    shadow = false,
-    additive = false,
-    outline = false,
-})
-
 function ENT:Draw()
     self:DrawModel()
 end
@@ -27,7 +9,7 @@ net.Receive("GetMenu", function()
     local MainMenu = vgui.Create("DFrame")
     MainMenu:SetPos(ScrW() * .01, ScrH() * .25)
     MainMenu:SetSize(ScrW() / 2, ScrH() / 2)
-    MainMenu:SetTitle("Оружейная стойка")
+    MainMenu:SetTitle(Translation.ArmyBox.Title)
     MainMenu:SetVisible(true)
     MainMenu:SetDraggable(false)
     MainMenu:ShowCloseButton(true)
@@ -43,22 +25,28 @@ net.Receive("GetMenu", function()
         draw.RoundedBox(0, 0, 0, w, h, Color(50, 50, 50))
     end
 
-    for key, value in pairs(WeaponsArm) do
-        if LocalPlayer():Team() == value.allowed then
-            local WeaponList = vgui.Create("DButton", MainMenu)
-            WeaponList:Dock(FILL)
-            WeaponList:SetText(value.Name)
-            WeaponList:Dock(TOP)
-            WeaponList:DockMargin(0, 0, 0, 5)
+    local ScrollPanel = vgui.Create("DScrollPanel", MainMenu)
+    ScrollPanel:SetSize(ScrW() / 2 - 20, MainMenu:GetWide() * 0.58)
+    ScrollPanel:SetPos(10, 30)
 
-            WeaponList.DoClick = function()
-                return SecondMenuVoid(value.model, value.Weapon, value.Name, armyBox)
-            end
+    for key, value in pairs(CustomShipments) do
+        local WeaponList = vgui.Create("DButton", ScrollPanel)
+        WeaponList:SetSize(ScrollPanel:GetTall(), ScrollPanel:GetWide() * 0.04)
+        if value.pricesep then
+            WeaponList:SetText(CustomShipments[key].name .. " | " .. Translation.ArmyBox.Price .. ": " .. value.pricesep)
+        else
+            WeaponList:SetText(CustomShipments[key].name)
+            WeaponList:SetColor(Color(255, 0, 0))
+            WeaponList:SetEnabled(false)
         end
+        WeaponList:Dock(TOP)
+        WeaponList:DockMargin(0, 0, 0, 5)
+        WeaponList:SetFont("Weapon List Font")
+        WeaponList.DoClick = function() return SecondMenuVoid(value.model, value.entity, CustomShipments[key].name, armyBox) end
     end
 end)
 
-function SecondMenuVoid(model, Weapon, Name, armyBox)
+function SecondMenuVoid(model, entity, Name, armyBox)
     if IsValid(SecondMenu) then
         SecondMenu:Close()
     end
@@ -66,7 +54,7 @@ function SecondMenuVoid(model, Weapon, Name, armyBox)
     SecondMenu = vgui.Create("DFrame")
     SecondMenu:SetPos(ScrW() * .52, ScrH() * .25)
     SecondMenu:SetSize(ScrW() / 4, ScrH() / 4 - 7)
-    SecondMenu:SetTitle("Оружейная стойка")
+    SecondMenu:SetTitle(Translation.ArmyBox.SecondTitle)
     SecondMenu:SetVisible(true)
     SecondMenu:SetDraggable(false)
     SecondMenu:ShowCloseButton(false)
@@ -76,22 +64,25 @@ function SecondMenuVoid(model, Weapon, Name, armyBox)
         draw.RoundedBox(0, 0, 0, w, h, Color(50, 50, 50))
     end
 
-    local Icon = vgui.Create("SpawnIcon", SecondMenu)
-    Icon:SetPos(110, 28)
-    Icon:SetSize(200, 200)
+    local Icon = vgui.Create("DModelPanel", SecondMenu)
+    Icon:SetCamPos(Vector(50, 5, 20))
+    Icon:SetLookAt(Vector(0, 0, 5))
+    Icon:SetFOV(40)
+    Icon:SetSize(100, 200)
+    Icon:SetPos(5, 5)
     Icon:SetModel(model)
     Icon:Dock(TOP)
     Icon:Center()
     local BuyWeapon = vgui.Create("DButton", SecondMenu)
     BuyWeapon:Dock(FILL)
-    BuyWeapon:SetText("Купить: " .. Name)
+    BuyWeapon:SetText(Translation.ArmyBox.Buy .. ": " .. Name)
     BuyWeapon:Dock(TOP)
     BuyWeapon:DockMargin(0, 0, 0, 5)
     BuyWeapon:SetFont("Weapon Font")
 
     BuyWeapon.DoClick = function()
         net.Start("GetWeapon")
-        net.WriteString(Weapon)
+        net.WriteString(entity)
         net.WriteEntity(armyBox)
         net.SendToServer()
     end
