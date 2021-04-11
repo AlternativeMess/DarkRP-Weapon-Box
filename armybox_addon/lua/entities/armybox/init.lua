@@ -11,7 +11,7 @@ function ENT:Initialize()
     self:SetSolid(SOLID_VPHYSICS)
     self.CanUse = true
     self:SetUseType(SIMPLE_USE)
-    local phys = ENT:GetPhysicsObject()
+    local phys = self:GetPhysicsObject()
 
     if phys:IsValid() then
         phys:Wake()
@@ -26,10 +26,10 @@ function ENT:Use(activator)
     end
 end
 
-net.Receive("GetWeapon", function(player)
+net.Receive("GetWeapon", function(len, player)
     local sid = player:SteamID64()
     local Weapon = net.ReadString()
-    local ent = net.ReadEntity()
+    local doent = net.ReadEntity()
 
     for k, v in pairs(WeaponsArm) do
         if Weapon == v.Weapon then
@@ -41,15 +41,16 @@ net.Receive("GetWeapon", function(player)
     if not value then return end
 
     if timer.Exists(sid .. "WeaponTimerTakeIt") then
-        player:ChatPrint("Перед взятием оружия нужно подождать " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " секунд!")
+        --player:ChatPrint("Перед взятием оружия нужно подождать " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " секунд!")
+        DarkRP.notify(player, 0, 4, "Перед взятием оружия нужно подождать " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " секунд!")
 
         return
     end
 
-    if (player:GetPos():Distance(ent:GetPos()) < 200) then
+    if (player:GetPos():Distance(doent:GetPos()) < 200) then
         player:Give(Weapon)
         timer.Create(sid .. "WeaponTimerTakeIt", 180, 1, function() end)
     else
-        DarkRP.notify(player, 0, 4, "Вы не можете себе этого позволить!")
+        DarkRP.notify(player, 0, 4, "Вы слишком далеко!")
     end
 end)

@@ -32,8 +32,3 @@ WeaponsArm = {
         allowed = TEAM_CITIZEN
     }
 }
-
-SpawnSArm = {
-    [1] = Vector(-4.928615, 522.054077, -83.983307),
-    [2] = Vector(-22.722206, 229.102051, -83.968750)
-}

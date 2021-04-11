@@ -29,9 +29,15 @@ net.Receive("GetMenu", function()
     MainMenu:SetSize(ScrW() / 2, ScrH() / 2)
     MainMenu:SetTitle("Оружейная стойка")
     MainMenu:SetVisible(true)
-    MainMenu:SetDraggable(true)
+    MainMenu:SetDraggable(false)
     MainMenu:ShowCloseButton(true)
     MainMenu:MakePopup()
+
+    MainMenu.OnClose = function()
+        if IsValid(SecondMenu) then
+            SecondMenu:Close()
+        end
+    end
 
     function MainMenu:Paint(w, h)
         draw.RoundedBox(0, 0, 0, w, h, Color(50, 50, 50))
@@ -44,19 +50,26 @@ net.Receive("GetMenu", function()
             WeaponList:SetText(value.Name)
             WeaponList:Dock(TOP)
             WeaponList:DockMargin(0, 0, 0, 5)
-            WeaponList.DoClick = function() return SecondMenuVoid(value.model, value.Weapon, value.Name, armyBox) end
+
+            WeaponList.DoClick = function()
+                return SecondMenuVoid(value.model, value.Weapon, value.Name, armyBox)
+            end
         end
     end
 end)
 
 function SecondMenuVoid(model, Weapon, Name, armyBox)
-    local SecondMenu = vgui.Create("DFrame")
+    if IsValid(SecondMenu) then
+        SecondMenu:Close()
+    end
+
+    SecondMenu = vgui.Create("DFrame")
     SecondMenu:SetPos(ScrW() * .52, ScrH() * .25)
     SecondMenu:SetSize(ScrW() / 4, ScrH() / 4 - 7)
     SecondMenu:SetTitle("Оружейная стойка")
     SecondMenu:SetVisible(true)
-    SecondMenu:SetDraggable(true)
-    SecondMenu:ShowCloseButton(true)
+    SecondMenu:SetDraggable(false)
+    SecondMenu:ShowCloseButton(false)
     SecondMenu:MakePopup()
 
     function SecondMenu:Paint(w, h)
