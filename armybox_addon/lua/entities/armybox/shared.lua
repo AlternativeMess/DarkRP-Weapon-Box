@@ -1,9 +1,12 @@
 -- Do not change these values
+Translation = {}
+Customization = {}
 Translation.ArmyBox = {}
 Customization.ArmyBox = {}
+
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
-ENT.PrintName = Translation.ArmyBox.Name
+ENT.PrintName = "WeaponBox"
 ENT.Author = "Alternative"
 ENT.Spawnable = true
 ENT.Category = "Alternative Dev"
@@ -15,7 +18,6 @@ Translation.ArmyBox.Price = "Price"
 Translation.ArmyBox.TimeLeft = "We'll have to wait"
 Translation.ArmyBox.Seconds = "Seconds"
 Translation.ArmyBox.NoMoney = "No Money"
-Translation.ArmyBox.Name = "Weapon Box"
 Translation.ArmyBox.GunDealer = "Gun dealer on server"
 -- Set it to true if you want the player to not be able to take weapons if there is an arms dealer on the server.
 Customization.ArmyBox.GunDealerNeed = false
