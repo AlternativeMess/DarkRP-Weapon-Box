@@ -41,6 +41,7 @@ net.Receive("GetWeapon", function(len, ply)
                 break
             end
         end
+
         if teamserver then return end
     end
 
@@ -54,7 +55,7 @@ net.Receive("GetWeapon", function(len, ply)
 
     if not value then return end
 
-    if timer.Exists(sid .. "WeaponTimerTakeIt") then
+    if Customization.ArmyBox.NeedTimer and timer.Exists(sid .. "WeaponTimerTakeIt") then
         DarkRP.notify(ply, 1, 4, Translation.ArmyBox.TimeLeft .. " " .. string.format("%i", timer.TimeLeft(sid .. "WeaponTimerTakeIt")) .. " " .. Translation.ArmyBox.Seconds)
 
         return
@@ -64,7 +65,10 @@ net.Receive("GetWeapon", function(len, ply)
         if ply:canAfford(price) then
             ply:addMoney(-price)
             ply:Give(entity)
-            timer.Create(sid .. "WeaponTimerTakeIt", 180, 1, function() end)
+
+            if Customization.ArmyBox.NeedTimer then
+                timer.Create(sid .. "WeaponTimerTakeIt", Customization.ArmyBox.TimerTime, 1, function() end)
+            end
         else
             DarkRP.notify(ply, 1, 4, Translation.ArmyBox.NoMoney)
         end

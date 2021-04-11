@@ -21,6 +21,10 @@ Translation.ArmyBox.GunDealer = "Gun dealer on server"
 Customization.ArmyBox.GunDealerNeed = false
 -- Set you team GunDealer.
 Customization.ArmyBox.GunDealerTeam = TEAM_GUN
+-- Set to false if you don't need buy timer.
+Customization.ArmyBox.NeedTimer = true
+-- Timer for last option
+Customization.ArmyBox.TimerTime = 180
 
 -- Customizing fonts (Not delele if CLIENT then end).
 if CLIENT then
