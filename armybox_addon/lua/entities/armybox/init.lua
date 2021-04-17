@@ -6,7 +6,6 @@ util.AddNetworkString("GetWeapon")
 
 function ENT:Initialize()
     self:SetModel("models/Items/ammoCrate_Rockets.mdl")
-    DarkRP.ValidatedPhysicsInit(self, SOLID_VPHYSICS)
     self:SetMoveType(MOVETYPE_VPHYSICS)
     self:SetSolid(SOLID_VPHYSICS)
     self.CanUse = true
