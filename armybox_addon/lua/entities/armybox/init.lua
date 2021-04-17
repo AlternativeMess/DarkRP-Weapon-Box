@@ -10,6 +10,7 @@ function ENT:Initialize()
     self:SetSolid(SOLID_VPHYSICS)
     self.CanUse = true
     self:SetUseType(SIMPLE_USE)
+    self:PhysicsInit( SOLID_VPHYSICS )
     local phys = self:GetPhysicsObject()
 
     if phys:IsValid() then
