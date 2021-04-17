@@ -32,6 +32,12 @@ net.Receive("GetWeapon", function(len, ply)
     local teamserver = false
     local value = false
 
+    if ply:HasWeapon(entity) then
+        DarkRP.notify(ply, 1, 4, Translation.ArmyBox.HasWeapon)
+
+        return
+    end
+
     if not Customization.ArmyBox.GunDealerNeed then
         for k, v in pairs(player.GetAll()) do
             if v:Team() == Customization.ArmyBox.GunDealerTeam then

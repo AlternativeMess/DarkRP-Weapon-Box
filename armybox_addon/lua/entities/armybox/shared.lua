@@ -3,7 +3,6 @@ Translation = {}
 Customization = {}
 Translation.ArmyBox = {}
 Customization.ArmyBox = {}
-
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "WeaponBox"
@@ -19,6 +18,7 @@ Translation.ArmyBox.TimeLeft = "We'll have to wait"
 Translation.ArmyBox.Seconds = "Seconds"
 Translation.ArmyBox.NoMoney = "No Money"
 Translation.ArmyBox.GunDealer = "Gun dealer on server"
+Translation.ArmyBox.HasWeapon = "You already have this weapon"
 -- Set it to true if you want the player to not be able to take weapons if there is an arms dealer on the server.
 Customization.ArmyBox.GunDealerNeed = false
 -- Set you team GunDealer.
